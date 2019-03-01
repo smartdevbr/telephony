@@ -3,10 +3,14 @@ defmodule Subscriber do
 
     def find_by_number(number), do: Enum.find read_file("subscribers.txt"), &(&1.number == number)
 
-    def create(name, number, plan) do 
-        list_subscribers = read_file("subscribers.txt") ++ [ %Subscriber{name: name, number: number, plan: plan} ]
-        |> :erlang.term_to_binary()
-        File.write("subscribers.txt", list_subscribers)
+    def create(name, number, plan) do
+        case find_by_number number do
+            nil -> 
+                list_subscribers = read_file("subscribers.txt") ++ [ %Subscriber{name: name, number: number, plan: plan} ]
+                |> :erlang.term_to_binary()
+                File.write("subscribers.txt", list_subscribers)
+            subscriber -> "Subscriber already registered"
+        end
     end
 
     def read_file(file_name) do
