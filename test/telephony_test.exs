@@ -3,6 +3,6 @@ defmodule TelephonyTest do
   doctest Telephony
 
   test "greets the world" do
-    assert Telephony.hello() == :world
+    assert Telephony.hello("Gustavo") == "Hello Gustavo"
   end
 end

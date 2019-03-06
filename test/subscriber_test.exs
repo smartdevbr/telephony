@@ -4,6 +4,11 @@ defmodule SubscriberTest do
 
     test "create a subscriber" do 
         Subscriber.delete("1197778490")
-        assert :ok == Subscriber.create("Gustavo", "1197778490", "pre")
+        assert Subscriber.create("Gustavo", "1197778490", "pre") == :ok
     end
+
+    test "delete a subscriber" do 
+        assert Subscriber.delete("1197778490") == :ok
+    end
+    
 end
