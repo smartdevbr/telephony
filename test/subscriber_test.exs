@@ -2,6 +2,7 @@ defmodule SubscriberTest do
     use ExUnit.Case
 
     @subscribers("subscribers.txt")
+    @subscriber_update %Subscriber{name: "Update ok", number: "11234", plan: "pos"}
 
     test "create a subscriber" do 
         Subscriber.delete("1197778490")
@@ -34,6 +35,11 @@ defmodule SubscriberTest do
     test "should return a subscriber in find_by_number" do 
         Subscriber.create("Gustavo", "1197778490", "pre")
         assert Subscriber.find_by_number("1197778490").name == "Gustavo"
+    end
+
+    test "update subscriber" do
+        Subscriber.create("Test update", "11234", "pos")
+        assert Subscriber.update("11234", @subscriber_update) == :ok
     end
     
 end
