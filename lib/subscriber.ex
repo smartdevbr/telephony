@@ -16,11 +16,19 @@ defmodule Subscriber do
         end
     end
 
-    def delete(number) do
-        subscribers_list = List.delete(read_file(@subscribers), find_by_number(number))
+    def update(number, subscriber) do
+        subscribers_list = delete_item(number) ++ [subscriber]
         |> :erlang.term_to_binary()
         File.write(@subscribers, subscribers_list)
     end
+
+    def delete(number) do
+        subscribers_list = delete_item(number)
+        |> :erlang.term_to_binary()
+        File.write(@subscribers, subscribers_list)
+    end
+
+    defp delete_item(number), do: List.delete(read_file(@subscribers), find_by_number(number))
 
     def read_file(file_name) do
         case File.read(file_name) do 
