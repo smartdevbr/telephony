@@ -1,5 +1,6 @@
 defmodule SubscriberTest do 
     use ExUnit.Case
+    doctest Subscriber
 
     @subscribers("subscribers.txt")
     @subscriber_update %Subscriber{name: "Update ok", number: "11234", plan: "pos"}

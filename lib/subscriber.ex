@@ -1,11 +1,22 @@
 defmodule Subscriber do
 
+    @moduledoc """
+    This module is to manipulate Subscribers 
+    """
+
     @subscribers("subscribers.txt")
 
     defstruct name: nil, number: nil, plan: nil
 
     def find_by_number(number), do: Enum.find read_file(@subscribers), &(&1.number == number)
 
+    @doc """
+    Create a new subscriber in a file
+
+        ## Examples
+        iex> Subscriber.create("Steve", "1238", "pre")
+        :ok
+    """
     def create(name, number, plan) do
         case find_by_number number do
             nil -> 
