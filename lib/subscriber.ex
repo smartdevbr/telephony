@@ -8,12 +8,20 @@ defmodule Subscriber do
 
     defstruct name: nil, number: nil, plan: nil
 
+    @doc """
+    To find a subscriber pass the `number`
+
+    ## Examples
+        iex> Subscriber.find_by_number("1238")
+        %Subscriber{name: "Steve", number: "1238", plan: "pre"}
+    """
     def find_by_number(number), do: Enum.find read_file(@subscribers), &(&1.number == number)
 
     @doc """
     Create a new subscriber in a file
 
-        ## Examples
+    ## Examples
+        iex> Subscriber.delete("1238")
         iex> Subscriber.create("Steve", "1238", "pre")
         :ok
     """
@@ -27,6 +35,9 @@ defmodule Subscriber do
         end
     end
 
+    @doc """
+    Function to update subcribers
+    """
     def update(number, subscriber) do
         subscribers_list = delete_item(number) ++ [subscriber]
         |> :erlang.term_to_binary()
