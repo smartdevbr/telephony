@@ -39,29 +39,44 @@ defmodule Subscriber do
         case find_by_number number do
             nil -> 
                 subscriber =  %Subscriber{name: name, number: number, plan: plan}
-                list_subscribers = read_file(@subscribers[validate_plan[subscriber]]) ++ [ subscriber ]
+                read_file(@subscribers[validate_plan[subscriber]]) ++ [ subscriber ]
                 |> :erlang.term_to_binary()
-                File.write(@subscribers, list_subscribers)
+                |> write_subscribers(subscriber)
             _subscriber -> "Subscriber already registered"
         end
+    end
+
+    def write_subscribers(subscribers_list, subscriber) do
+        File.write(@subscribers[validate_plan(subscriber)], subscribers_list)
     end
 
     @doc """
     Function to update subcribers
     """
     def update(number, subscriber) do
-        subscribers_list = delete_item(number) ++ [subscriber]
-        |> :erlang.term_to_binary()
-        File.write(@subscribers, subscribers_list)
+        {old_subscriber, subscribers_list} = delete_item(number)
+
+        case subscriber.plan.__struct == old_subscriber.plan.__strut__ do
+            true -> 
+                subscribers_list ++ [subscriber]
+                |> :erlang.term_to_binary()
+                |> write_subscribers(subscriber)
+            false ->
+                "Subscriber needs to have the same plan"
+        end
     end
 
     def delete(number) do
-        subscribers_list = delete_item(number)
+        {subscriber, subscribers_list} = delete_item(number)
+        subscribers_list
         |> :erlang.term_to_binary()
-        File.write(@subscribers, subscribers_list)
+        |> write_subscribers(subscriber)
     end
 
-    defp delete_item(number), do: List.delete(read_file(@subscribers), find_by_number(number))
+    defp delete_item(number) do 
+        subscriber = find_by_number(number)
+        {subscriber, List.delete(read_file(@subscribers[validate_plan(subscriber)]), subscriber)}
+    end
 
     def find_all(), do: find_all_pre_post_paid() ++ find_all_pre_paid()
     def find_all_pre_post_paid(), do: read_file(@subscribers[:post])
