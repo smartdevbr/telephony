@@ -32,10 +32,14 @@ defmodule Subscriber do
         iex> Subscriber.create("Steve", "1238", "pre")
         :ok
     """
+    def create(name, number, :pre), do: create(name, number, %Prepaid{})
+    def create(name, number, :post), do: create(name, number, %PostPaid{})
+
     def create(name, number, plan) do
         case find_by_number number do
             nil -> 
-                list_subscribers = read_file(@subscribers) ++ [ %Subscriber{name: name, number: number, plan: plan} ]
+                subscriber =  %Subscriber{name: name, number: number, plan: plan}
+                list_subscribers = read_file(@subscribers[validate_plan[subscriber]]) ++ [ subscriber ]
                 |> :erlang.term_to_binary()
                 File.write(@subscribers, list_subscribers)
             _subscriber -> "Subscriber already registered"
@@ -62,6 +66,13 @@ defmodule Subscriber do
     def find_all(), do: find_all_pre_post_paid() ++ find_all_pre_paid()
     def find_all_pre_post_paid(), do: read_file(@subscribers[:post])
     def find_all_pre_paid(), do: read_file(@subscribers[:pre])
+
+    defp validate_plan(subscriber) do
+        case subscriber.plan.__struct == PostPaid do
+            true -> :post
+            false -> :pre
+        end
+    end
 
     defp read_file(file_name) do
         case File.read(file_name) do 
