@@ -4,7 +4,9 @@ defmodule Subscriber do
     This module is to manipulate Subscribers 
     """
 
-    @subscribers("subscribers.txt")
+    @subscribers %{:pre => "pre.txt", :post => "post.txt"}
+
+
 
     defstruct name: nil, number: nil, plan: nil
 
@@ -15,7 +17,12 @@ defmodule Subscriber do
         iex> Subscriber.find_by_number("1238")
         %Subscriber{name: "Steve", number: "1238", plan: "pre"}
     """
-    def find_by_number(number), do: Enum.find read_file(@subscribers), &(&1.number == number)
+    def find_by_number(number, key \\ :all), do: find(number, key)
+
+    defp find(number, :all), do: Enum.find find_all(), &(&1.number == number)
+    defp find(number, :pre), do: Enum.find find_all_pre_paid(), &(&1.number == number)
+    defp find(number, :post), do: Enum.find find_all_pre_post_paid(), &(&1.number == number)
+
 
     @doc """
     Create a new subscriber in a file
@@ -52,7 +59,11 @@ defmodule Subscriber do
 
     defp delete_item(number), do: List.delete(read_file(@subscribers), find_by_number(number))
 
-    def read_file(file_name) do
+    def find_all(), do: find_all_pre_post_paid() ++ find_all_pre_paid()
+    def find_all_pre_post_paid(), do: read_file(@subscribers[:post])
+    def find_all_pre_paid(), do: read_file(@subscribers[:pre])
+
+    defp read_file(file_name) do
         case File.read(file_name) do 
             {:ok, binary} -> :erlang.binary_to_term binary
             {:error, _error}  -> "Failed to read the file"
