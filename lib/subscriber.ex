@@ -39,7 +39,7 @@ defmodule Subscriber do
         case find_by_number number do
             nil -> 
                 subscriber =  %Subscriber{name: name, number: number, plan: plan}
-                read_file(@subscribers[validate_plan[subscriber]]) ++ [ subscriber ]
+                read_file(@subscribers[validate_plan(subscriber)]) ++ [ subscriber ]
                 |> :erlang.term_to_binary()
                 |> write_subscribers(subscriber)
             _subscriber -> "Subscriber already registered"
@@ -56,7 +56,7 @@ defmodule Subscriber do
     def update(number, subscriber) do
         {old_subscriber, subscribers_list} = delete_item(number)
 
-        case subscriber.plan.__struct == old_subscriber.plan.__strut__ do
+        case subscriber.plan.__struct__ == old_subscriber.plan.__strut__ do
             true -> 
                 subscribers_list ++ [subscriber]
                 |> :erlang.term_to_binary()
@@ -83,7 +83,7 @@ defmodule Subscriber do
     def find_all_pre_paid(), do: read_file(@subscribers[:pre])
 
     defp validate_plan(subscriber) do
-        case subscriber.plan.__struct == PostPaid do
+        case subscriber.plan.__struct__ == PostPaid do
             true -> :post
             false -> :pre
         end

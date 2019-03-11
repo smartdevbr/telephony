@@ -2,17 +2,30 @@ defmodule SubscriberTest do
     use ExUnit.Case
     doctest Subscriber
 
+    setup do 
+        File.write("pre.txt", :erlang.term_to_binary([]))
+        File.write("post.txt", :erlang.term_to_binary([]))
+
+
+        on_exit fn -> 
+            File.rm("pre.txt")
+            File.rm("post.txt")
+        end
+    end
+
     @subscribers("subscribers.txt")
     @subscriber_update %Subscriber{name: "Update ok", number: "11234", plan: "pos"}
 
-    test "create a subscriber" do 
-        Subscriber.delete("1197778490")
-        assert Subscriber.create("Gustavo", "1197778490", "pre") == :ok
-    end
-    
-    test "throw a message when subscriber registered" do 
-        Subscriber.create("Gustavo", "1197778490", "pre")
-        assert Subscriber.create("Gustavo", "1197778490", "pre") == "Subscriber already registered"
+
+    describe "tests for creating a subscriber" do 
+        test "create a subscriber" do 
+            assert Subscriber.create("Gustavo", "1197778490", :pre) == :ok
+        end
+        
+        test "throw a message when subscriber registered" do 
+            Subscriber.create("Gustavo", "1197778490", :pre)
+            assert Subscriber.create("Gustavo", "1197778490", :pre) == "Subscriber already registered"
+        end
     end
 
     test "delete a subscriber" do 
