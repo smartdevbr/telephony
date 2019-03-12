@@ -14,8 +14,13 @@ defmodule Subscriber do
     To find a subscriber pass the `number`
 
     ## Examples
+        iex> Subscriber.create("Steve", "1238", :pre)
         iex> Subscriber.find_by_number("1238")
-        %Subscriber{name: "Steve", number: "1238", plan: "pre"}
+        %Subscriber{
+              name: "Steve",
+              number: "1238",
+              plan: %Prepaid{credits: nil, recharge: nil}
+        }
     """
     def find_by_number(number, key \\ :all), do: find(number, key)
 
@@ -28,8 +33,7 @@ defmodule Subscriber do
     Create a new subscriber in a file
 
     ## Examples
-        iex> Subscriber.delete("1238")
-        iex> Subscriber.create("Steve", "1238", "pre")
+        iex> Subscriber.create("Steve", "1238", :pre)
         :ok
     """
     def create(name, number, :pre), do: create(name, number, %Prepaid{})
@@ -56,7 +60,7 @@ defmodule Subscriber do
     def update(number, subscriber) do
         {old_subscriber, subscribers_list} = delete_item(number)
 
-        case subscriber.plan.__struct__ == old_subscriber.plan.__strut__ do
+        case subscriber.plan.__struct__ == old_subscriber.plan.__struct__ do
             true -> 
                 subscribers_list ++ [subscriber]
                 |> :erlang.term_to_binary()
