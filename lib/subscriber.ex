@@ -8,7 +8,7 @@ defmodule Subscriber do
 
 
 
-    defstruct name: nil, number: nil, plan: nil
+    defstruct name: nil, number: nil, plan: nil, calls: []
 
     @doc """
     To find a subscriber pass the `number`
