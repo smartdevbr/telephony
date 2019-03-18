@@ -13,7 +13,6 @@ defmodule SubscriberTest do
         end
     end
 
-    @subscribers("subscribers.txt")
     @subscriber_update %Subscriber{name: "Update ok", number: "11234", plan: %PostPaid{value: nil}}
 
 
