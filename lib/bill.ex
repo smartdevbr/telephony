@@ -1,4 +1,8 @@
 defmodule Bill do
+  @doc """
+  Through the date and subscriber plan, prints all the campaigns carried out in the day and year, 
+  returning the data of the subscriber, calls made and a given
+  """
   def print_bill(month, year, number, key) do
     subscriber = Subscriber.find_by_number(number, key)
     calls_month = find_elements_by_month(subscriber.calls, month, year)
