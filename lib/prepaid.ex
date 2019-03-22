@@ -16,4 +16,9 @@ defmodule Prepaid do
                 "You are not allowed to make the call. please make a recharge!"
         end
     end
+
+    def print_bill(month, year, number) do
+        Bill.print_bill(month, year, number, :pre)
+    end
+    
 end
