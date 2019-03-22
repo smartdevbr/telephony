@@ -16,7 +16,7 @@ defmodule Subscriber do
       %Subscriber{
             name: "Steve",
             number: "1238",
-            plan: %Prepaid{credits: nil, recharge: nil}
+            plan: %Prepaid{credits: 0, recharges: []}
       }
   """
   def find_by_number(number, key \\ :all), do: find(number, key)
