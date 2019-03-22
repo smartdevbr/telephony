@@ -1,6 +1,6 @@
 defmodule Subscriber do
   @moduledoc """
-  This module is to manipulate Subscribers 
+    Create Subscribers, update, delete, list all...
   """
 
   @subscribers %{:pre => "pre.txt", :post => "post.txt"}
@@ -8,7 +8,7 @@ defmodule Subscriber do
   defstruct name: nil, number: nil, plan: nil, calls: []
 
   @doc """
-  To find a subscriber pass the `number`
+  To find a subscriber pass the `number` and `key` with :all, :pre and :post
 
   ## Examples
       iex> Subscriber.create("Steve", "1238", :pre)
@@ -26,11 +26,14 @@ defmodule Subscriber do
   defp find(number, :post), do: Enum.find(find_all_post_paid(), &(&1.number == number))
 
   @doc """
-  Create a new subscriber in a file
+    Create a subscriber passing the plan prepaid or postpaid
+    if subscriber already exist return a message `Subscriber already registered`
 
-  ## Examples
-      iex> Subscriber.create("Steve", "1238", :pre)
-      :ok
+    ## Examples
+        iex> Subscriber.create("Steve", "1238", :pre)
+        :ok
+        iex> Subscriber.create("Steve", "1238", :pre)
+        "Subscriber already registered"
   """
   def create(name, number, :pre), do: create(name, number, %Prepaid{})
   def create(name, number, :post), do: create(name, number, %PostPaid{})
@@ -49,12 +52,16 @@ defmodule Subscriber do
     end
   end
 
+  @doc """
+   receives a `subscribers_list` and a new `subscriber`, validate plan and save into pre.txt or post.txt
+  """
   def write_subscribers(subscribers_list, subscriber) do
     File.write(@subscribers[validate_plan(subscriber)], subscribers_list)
   end
 
   @doc """
-  Function to update subcribers
+    updates a subscriber into a list 
+    if subscriber has the same plan save the subscriber or throw a message `Subscriber needs to have the same plan`
   """
   def update(number, subscriber) do
     {old_subscriber, subscribers_list} = delete_item(number)
@@ -70,6 +77,9 @@ defmodule Subscriber do
     end
   end
 
+  @doc """
+   To delete a subscriber, just need to pass a `number`
+  """
   def delete(number) do
     {subscriber, subscribers_list} = delete_item(number)
 
@@ -78,6 +88,9 @@ defmodule Subscriber do
     |> write_subscribers(subscriber)
   end
 
+  @doc """
+   is private function to delete a subscriber inside the list
+  """
   defp delete_item(number) do
     subscriber = find_by_number(number)
     {subscriber, List.delete(read_file(@subscribers[validate_plan(subscriber)]), subscriber)}
