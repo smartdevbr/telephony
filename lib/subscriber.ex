@@ -26,7 +26,7 @@ defmodule Subscriber do
 
     defp find(number, :all), do: Enum.find find_all(), &(&1.number == number)
     defp find(number, :pre), do: Enum.find find_all_pre_paid(), &(&1.number == number)
-    defp find(number, :post), do: Enum.find find_all_pre_post_paid(), &(&1.number == number)
+    defp find(number, :post), do: Enum.find find_all_post_paid(), &(&1.number == number)
 
 
     @doc """
@@ -82,8 +82,8 @@ defmodule Subscriber do
         {subscriber, List.delete(read_file(@subscribers[validate_plan(subscriber)]), subscriber)}
     end
 
-    def find_all(), do: find_all_pre_post_paid() ++ find_all_pre_paid()
-    def find_all_pre_post_paid(), do: read_file(@subscribers[:post])
+    def find_all(), do: find_all_post_paid() ++ find_all_pre_paid()
+    def find_all_post_paid(), do: read_file(@subscribers[:post])
     def find_all_pre_paid(), do: read_file(@subscribers[:pre])
 
     defp validate_plan(subscriber) do
