@@ -88,16 +88,24 @@ defmodule Subscriber do
     |> write_subscribers(subscriber)
   end
 
-  @doc """
-   is private function to delete a subscriber inside the list
-  """
   defp delete_item(number) do
     subscriber = find_by_number(number)
     {subscriber, List.delete(read_file(@subscribers[validate_plan(subscriber)]), subscriber)}
   end
 
+  @doc """
+   find all subscribers in sequence all postpaid and all prepaid
+  """
   def find_all(), do: find_all_post_paid() ++ find_all_pre_paid()
+
+  @doc """
+   find all subscribers postpaid
+  """
   def find_all_post_paid(), do: read_file(@subscribers[:post])
+
+  @doc """
+   find all subscribers prepaid
+  """
   def find_all_pre_paid(), do: read_file(@subscribers[:pre])
 
   defp validate_plan(subscriber) do
