@@ -29,7 +29,7 @@ defmodule CallTest do
       date = DateTime.utc_now()
       Recharge.new(date, 30, "1197778490")
 
-      assert Call.register_call(subscriber, 5, date, 10) == :ok
+      assert Call.register_call(subscriber, date, 10) == :ok
       calls = Subscriber.find_by_number("1197778490", :pre).calls
       assert Enum.count(calls) == 1
       assert List.first(calls) == %Call{date: date, duration: 10}

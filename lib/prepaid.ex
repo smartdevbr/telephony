@@ -8,12 +8,12 @@ defmodule Prepaid do
   defstruct credits: 0, recharges: []
 
   @doc """
-    This function is used to register a call from a prepaid subscriber on a 
-    date with a duration of minutes provided in its arguments. 
-    The function should check if the subscriber has enough credits to make the call. 
-    the cost of a prepaid call is `1.45` per minute. 
-    if the call is successful, 
-    it must be stored in the call list and the subscriber's credits must be updated, 
+    This function is used to register a call from a prepaid subscriber on a
+    date with a duration of minutes provided in its arguments.
+    The function should check if the subscriber has enough credits to make the call.
+    the cost of a prepaid call is `1.45` per minute.
+    if the call is successful,
+    it must be stored in the call list and the subscriber's credits must be updated,
     if it is not possible to display a message: `You are not allowed to make the call. please make a recharge!`
   """
   def make_call(number, date, duration) do
@@ -22,16 +22,18 @@ defmodule Prepaid do
 
     cond do
       cost <= subscriber.plan.credits ->
-        Call.register_call(subscriber, cost, date, duration)
-
+        %Subscriber{ subscriber | plan:
+          %Prepaid{subscriber.plan | credits: subscriber.plan.credits - cost}
+        }
+        |> Call.register_call(date, duration)
       true ->
         "You are not allowed to make the call. please make a recharge!"
     end
   end
 
   @doc """
-    This function must be used to print the bill of a prepaid subscriber in a month given its arguments, 
-    the function should print the subscriber, month calls, month recharges, 
+    This function must be used to print the bill of a prepaid subscriber in a month given its arguments,
+    the function should print the subscriber, month calls, month recharges,
     number of calls and number of recharges along with the credits of the subscriber
   """
   def print_bill(month, year, number) do
