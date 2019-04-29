@@ -10,7 +10,6 @@ defmodule Call do
       subscriber
       | calls: subscriber.calls ++ [%Call{date: date, duration: duration}]
     }
-
     Subscriber.update(subscriber.number, subscriber_update)
   end
 end
